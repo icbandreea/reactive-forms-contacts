@@ -5,9 +5,10 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { ContactsService } from '../contacts/contacts.service';
 import { addressTypeValues, phoneTypeValues } from '../contacts/contact.model';
 import { restrictedWords } from '../validators/restricted-words.validator';
+import { DateValueAccessorDirective } from '../date-value-accessor/date-value-accessor.directive';
 
 @Component({
-  imports: [CommonModule, ReactiveFormsModule],
+  imports: [CommonModule, ReactiveFormsModule, DateValueAccessorDirective],
   templateUrl: './edit-contact.component.html',
   styleUrls: ['./edit-contact.component.css']
 })
