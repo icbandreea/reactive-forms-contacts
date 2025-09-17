@@ -6,10 +6,22 @@
     <section>
       <nav>Name/Info</nav>
       <div>
-        <input formControlName="firstName" placeholder="First Name" />
+        <input formControlName="firstName" placeholder="First Name" [class.error]="firstName.invalid && firstName.touched"/>
+        @if(firstName.errors?.['required'] && firstName.touched) {
+          <em>Please enter a First Name</em>
+        } @else if (firstName.errors?.['minlength']) {
+          <em>First Name must be at least 3 characters</em>
+        }
         <input formControlName="lastName" placeholder="Last Name" />
-        <input formControlName="dateOfBirth" placeholder="Date of Birth" />
-        <input formControlName="favoritesRanking" placeholder="Favorites Ranking" />
+        <input formControlName="dateOfBirth" type="date" [value]="contactForm.controls.dateOfBirth.value | date:'yyyy-MM-dd'" placeholder="Date of Birth" />
+        <div>
+          <span>Favorites Ranking</span>
+          <input type="range" min="0" max="5" formControlName="favoritesRanking" placeholder="Favorites Ranking" />
+          <span>{{contactForm.controls.favoritesRanking.value}}</span>
+        </div>
+        <div>
+          <input type="checkbox" formControlName="personal" /> Personal
+        </div>
       </div>
     </section>
     <section>
@@ -20,16 +32,18 @@
           <img src="/assets/plus-grey-blue.png" class="add" />
         </div>
         <div class="radio">
-          <input type="radio" formControlName="phoneType" value="mobile"> Mobile
-          <input type="radio" formControlName="phoneType" value="work"> Work
-          <input type="radio" formControlName="phoneType" value="other"> Other
+          @for(phoneType of phoneTypes; track phoneType.value) {
+            <span>
+              <input type="radio" formControlName="phoneType" [value]="phoneType.value"> {{phoneType.title}}
+            </span>
+          }
         </div>
       </div>
     </section>
     <section>
       <nav>Address</nav>
       <div>
-        <div formGroupName="address" class="address">
+        <div formGroupName="address" class="address" [class.error]="address.invalid && address.dirty">
           <div class="flex-group">
             <input formControlName="streetAddress" placeholder="Address" />
             <img src="/assets/plus-grey-blue.png" class="add" />
@@ -37,17 +51,29 @@
           <input placeholder="City" formControlName="city" />
           <input placeholder="State/Region" formControlName="state" />
           <input placeholder="Zip/Postal Code" formControlName="postalCode" />
-          <select >
-            <option value="home">Home</option>
-            <option value="work">Work</option>
-            <option value="mobile">Other</option>
+          <select formControlName="addressType">
+            @for(addressType of addressTypes; track addressType.value) {
+              <option [value]="addressType.value">{{addressType.title}}</option>
+            }
           </select>
         </div>
+        @if (address.invalid && address.dirty) {
+          <em>Incomplete Address</em>
+        }
+      </div>
+    </section>
+    <section>
+      <nav>Notes</nav>
+      <div>
+        <textarea placeholder="Notes" rows="5" formControlName="notes" [class.error]="notes.invalid"></textarea>
+        @if(notes.errors?.['restrictedWords']) {
+          <em>Restricted words found: {{notes.errors?.['restrictedWords']}}</em>
+        }
       </div>
     </section>
     <div class="buttons">
       <button class="secondary">Cancel</button>
-      <button type="submit" class="primary" >Save</button>
+      <button type="submit" class="primary" [disabled]="contactForm.invalid" >Save</button>
     </div>
   </form>
 </div>
