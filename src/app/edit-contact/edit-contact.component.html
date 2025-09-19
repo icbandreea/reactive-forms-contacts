@@ -33,6 +33,9 @@
               <input formControlName="phoneNumber" placeholder="Phone" />
               <img src="/assets/plus-grey-blue.png" class="add" (click)="addPhone()"/>
             </div>
+            @if(phone.controls.phoneNumber.invalid) {
+              <em>Preferred Phone is required</em>
+            }
             <div class="radio">
               @for (phoneType of phoneTypes; track phoneType.value) {
                 <span>
@@ -41,32 +44,40 @@
                 </span>
               }
             </div>
+            <span>
+              <input type="checkbox" formControlName="preferred"/> Preferred
+            </span>
           </div>
         }
       </div>
     </section>
     <section>
       <nav>Address</nav>
-      <div formGroupName="address" class="address" [class.error]="address.invalid && address.dirty">
-        <div formArrayName="streetAddresses">
-          @for (ctrl of contactForm.controls.address.controls.streetAddresses.controls; track i; let i = $index) {
-            <div class="flex-column">
-              <div class="flex-group">
-                <input [formControlName]="i" placeholder="Address" />
-                <img src="/assets/plus-grey-blue.png" class="add" (click)="addStreetAddress()"/>
+      <div>
+        <div formGroupName="address" class="address" [class.error]="address.invalid && address.dirty">
+          <div formArrayName="streetAddresses">
+            @for (ctrl of contactForm.controls.address.controls.streetAddresses.controls; track i; let i = $index) {
+              <div class="flex-column">
+                <div class="flex-group">
+                  <input [formControlName]="i" placeholder="Address" />
+                  <img src="/assets/plus-grey-blue.png" class="add" (click)="addStreetAddress()"/>
+                </div>
               </div>
-            </div>
-          }
-        </div>
+            }
+          </div>
 
-        <input placeholder="City" formControlName="city" />
-        <input placeholder="State/Region" formControlName="state" />
-        <input placeholder="Zip/Postal Code" formControlName="postalCode" />
-        <select formControlName="addressType">
-          @for(addressType of addressTypes; track addressType.value) {
-            <option [value]="addressType.value">{{addressType.title}}</option>
-          }
-        </select>
+          <input placeholder="City" formControlName="city" />
+          <input placeholder="State/Region" formControlName="state" />
+          <input placeholder="Zip/Postal Code" formControlName="postalCode" />
+          <select formControlName="addressType">
+            @for(addressType of addressTypes; track addressType.value) {
+              <option [value]="addressType.value">{{addressType.title}}</option>
+            }
+          </select>
+        </div>
+              @if (address.invalid && address.dirty) {
+                <em>Incomplete Address</em>
+              }
       </div>
     </section>
 
