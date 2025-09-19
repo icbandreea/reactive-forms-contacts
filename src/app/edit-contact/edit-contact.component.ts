@@ -22,12 +22,9 @@ export class EditContactComponent implements OnInit {
     lastName : '',
     dateOfBirth : <Date | null> null,
     favoritesRanking : <number | null> null,
-    phone: this.fb.nonNullable.group({
-      phoneNumber: '',
-      phoneType: '',
-    }),
+    phones: this.fb.array([this.createPhoneGroup()]),
     address: this.fb.nonNullable.group({
-      streetAddress: ['', Validators.required],
+      streetAddresses: this.fb.array([this.createStreetAddress()]),
       city: ['', Validators.required],
       state: ['', Validators.required],
       postalCode: ['', Validators.required],
@@ -51,9 +48,28 @@ export class EditContactComponent implements OnInit {
     this.contactsService.getContact(contactId).subscribe((contact) => {
       if(!contact) return;
 
+      for(let i =1; i < contact.phones.length; i++) {
+        this.addPhone();
+      }
+
+      for(let i = 1; i< contact.address.streetAddresses.length; i++ ) {
+        this.addStreetAddress();
+      }
+
       this.contactForm.setValue(contact);
 
     });
+  }
+
+  createPhoneGroup() {
+    return this.fb.nonNullable.group({
+      phoneNumber: '',
+      phoneType: '',
+    });
+  }
+
+  createStreetAddress() {
+    return this.fb.nonNullable.control('', Validators.required);
   }
 
   get firstName() {
@@ -70,10 +86,21 @@ export class EditContactComponent implements OnInit {
 
 
   saveContact() {
-    console.log(this.contactForm.value.dateOfBirth, typeof this.contactForm.value.dateOfBirth);
-    
     this.contactsService.saveContact(this.contactForm.getRawValue()).subscribe({
       next: () => this.router.navigate(['/contacts'])
     });
+  }
+
+  cancelContact() {
+    this.router.navigate(['/contacts']);
+  }
+  
+
+  addPhone() {
+    return this.contactForm.controls.phones.push(this.createPhoneGroup());
+  }
+
+  addStreetAddress() {
+    return this.contactForm.controls.address.controls.streetAddresses.push(this.createStreetAddress());
   }
 }

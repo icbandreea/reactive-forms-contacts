@@ -25,43 +25,51 @@
       </div>
     </section>
     <section>
-      <nav>Phone</nav>
-      <div formGroupName="phone" class="flex-column">
-        <div class="flex-group">
-          <input formControlName="phoneNumber" placeholder="Phone" />
-          <img src="/assets/plus-grey-blue.png" class="add" />
-        </div>
-        <div class="radio">
-          @for(phoneType of phoneTypes; track phoneType.value) {
-            <span>
-              <input type="radio" formControlName="phoneType" [value]="phoneType.value"> {{phoneType.title}}
-            </span>
-          }
-        </div>
+      <nav>Phones</nav>
+      <div formArrayName="phones">
+        @for (phone of contactForm.controls.phones.controls; track i; let i = $index) {
+          <div [formGroupName]="i" class="flex-column">
+            <div class="flex-group">
+              <input formControlName="phoneNumber" placeholder="Phone" />
+              <img src="/assets/plus-grey-blue.png" class="add" (click)="addPhone()"/>
+            </div>
+            <div class="radio">
+              @for (phoneType of phoneTypes; track phoneType.value) {
+                <span>
+                  <input type="radio" formControlName="phoneType" [value]="phoneType.value" />
+                  {{ phoneType.title }}
+                </span>
+              }
+            </div>
+          </div>
+        }
       </div>
     </section>
     <section>
       <nav>Address</nav>
-      <div>
-        <div formGroupName="address" class="address" [class.error]="address.invalid && address.dirty">
-          <div class="flex-group">
-            <input formControlName="streetAddress" placeholder="Address" />
-            <img src="/assets/plus-grey-blue.png" class="add" />
-          </div>
-          <input placeholder="City" formControlName="city" />
-          <input placeholder="State/Region" formControlName="state" />
-          <input placeholder="Zip/Postal Code" formControlName="postalCode" />
-          <select formControlName="addressType">
-            @for(addressType of addressTypes; track addressType.value) {
-              <option [value]="addressType.value">{{addressType.title}}</option>
-            }
-          </select>
+      <div formGroupName="address" class="address" [class.error]="address.invalid && address.dirty">
+        <div formArrayName="streetAddresses">
+          @for (ctrl of contactForm.controls.address.controls.streetAddresses.controls; track i; let i = $index) {
+            <div class="flex-column">
+              <div class="flex-group">
+                <input [formControlName]="i" placeholder="Address" />
+                <img src="/assets/plus-grey-blue.png" class="add" (click)="addStreetAddress()"/>
+              </div>
+            </div>
+          }
         </div>
-        @if (address.invalid && address.dirty) {
-          <em>Incomplete Address</em>
-        }
+
+        <input placeholder="City" formControlName="city" />
+        <input placeholder="State/Region" formControlName="state" />
+        <input placeholder="Zip/Postal Code" formControlName="postalCode" />
+        <select formControlName="addressType">
+          @for(addressType of addressTypes; track addressType.value) {
+            <option [value]="addressType.value">{{addressType.title}}</option>
+          }
+        </select>
       </div>
     </section>
+
     <section>
       <nav>Notes</nav>
       <div>
@@ -72,7 +80,7 @@
       </div>
     </section>
     <div class="buttons">
-      <button class="secondary">Cancel</button>
+      <button class="secondary" (click)="cancelContact()">Cancel</button>
       <button type="submit" class="primary" [disabled]="contactForm.invalid" >Save</button>
     </div>
   </form>

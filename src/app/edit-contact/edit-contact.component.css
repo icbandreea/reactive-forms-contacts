@@ -41,6 +41,7 @@ section>div {
 }
 
 section div.flex-column {
+  display: flex;
   flex-direction: column;
   flex-grow: 1;
   justify-content: center;
@@ -123,4 +124,9 @@ section div em {
 
 .buttons * {
   flex: 1 1 auto;
+}
+
+:host section .address > div[formArrayName="streetAddresses"] {
+  display: flex;
+  flex-direction: column; 
 }
